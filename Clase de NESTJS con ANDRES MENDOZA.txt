@@ -1,0 +1,16 @@
+Clase de NESTJS con ANDRES MENDOZA:
+
+LINK NOTION: https://academlo.notion.site/NestJS-695c422ded5d40308aa636ccec40c4f2
+//RECOMENDABLE ELIMINAR PRETTIER//
+--npm uninstall prettier--
+
+---------------------------------- CLASE --------------------------------------------
+
+--Ejecutar el servidor:
+	npm run start:dev
+
+--class validator:
+	https://github.com/typestack/class-validator#validation-decorators
+
+
+
