@@ -19,14 +19,12 @@ export class VideogamesController {
 
   @Post()
   createVideogames(@Body() videogameDto: CreateVideoGameDto){
-    console.log(videogameDto);
-    return this.videogamesService.create();
+    return this.videogamesService.create(videogameDto);
   }
 
   @Patch(':id')
   updateVideogame(@Param('id') id:string, @Body() videoGameDto: UpdateVideoGameDto){
-    console.log(videoGameDto);
-    return this.videogamesService.update(id);
+    return this.videogamesService.update(id, videoGameDto);
   }
 
   @Delete(':id')

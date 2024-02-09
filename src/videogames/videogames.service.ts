@@ -1,24 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Videogame } from './entities/videogame.entity';
+import { Repository } from 'typeorm';
+import { CreateVideoGameDto } from './dtos/create-videogame.dto';
+import { UpdateVideoGameDto } from './dtos/update-videogame.dto';
 
 @Injectable()
 export class VideogamesService {
-    getAll() {
-        return 'Trayendo los videjuegos(desde el servicio)';
+
+    constructor( //Agregar
+        @InjectRepository(Videogame) 
+        private videogameRepository: Repository<Videogame>
+    ) {}
+
+    async getAll() {
+        const videogames = await this.videogameRepository.find();
+        return videogames;
     }
 
-    getById(id: string){
-        return `Obteniendo por el id ${id}`;
+    async getById(id: string){
+        const videogame = await this.videogameRepository.findOneBy({ id: +id });
+        if(!videogame){
+            throw new NotFoundException('Videogame not found');
+        }
+        return videogame;
     }
 
-    create(){
-        return 'Creando videojuego';
+    async create(videogameDto: CreateVideoGameDto){
+        const videogame = this.videogameRepository.create(videogameDto);
+        await this.videogameRepository.save(videogame);
+        return videogame;
     }
 
-    update(id: string){
-        return 'cambiando datos de videojuego' + id;
+    async update(id: string, videoGameDto: UpdateVideoGameDto){
+        const videogame = await this.videogameRepository.preload({
+            id: +id,
+            ...videoGameDto
+        })
+        await this.videogameRepository.save(videogame);
+        return videogame;
     }
 
-    remove(id: string){
-        return 'Eliminando un videojueg de id' + id;
+    async remove(id: string){
+        const deleted = await this.videogameRepository.delete({ id: +id });
+        if(deleted.affected === 0){
+            throw new NotFoundException('Videojuego no encontrado');
+        }
+        return {
+            message: 'Juego eliminado'
+        }
     }
 }
